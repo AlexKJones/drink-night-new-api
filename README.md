@@ -16,23 +16,16 @@ POST | /sign-up
 POST | /sign-in
 PATCH | /change-password
 DELETE | /sign-out 
-GET  |  /shows
-GET | /shows/:id
-POST | /shows
-PATCH | /shows/:id
-DELETE | /shows/:id
-GET | /reviews
-GET | /reviews/:id
-POST | /reviews
-PATCH | /reviews/:id
-DELETE | /reviews/:id  
+GET  |  /
+GET | //:id
 
-Wireframe: [Wireframe](https://imgur.com/a/dELOXIs)
 
-ERD: [ERD](https://imgur.com/a/Xu5Wb5G)
+Wireframe: [Wireframe]
 
-Alternate Repo: [API](https://github.com/Did-You-Restart/reviewflix-api)
+ERD: [ERD]
 
-Heroku API: [Deployed Heroku API](https://hidden-river-83146.herokuapp.com/)
+Alternate Repo: [API]
 
-Deployed Client-Side Link: [Deployed Client-Side](https://did-you-restart.github.io/reviewflix-client/#/)
+Heroku API: [Deployed Heroku API]
+
+Deployed Client-Side Link: [Deployed Client-Side]
