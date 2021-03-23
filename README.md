@@ -26,6 +26,6 @@ ERD: [ERD]
 
 Alternate Repo: [API]
 
-Heroku API: [Deployed Heroku API]
+Heroku API: [Deployed Heroku API](https://dashboard.heroku.com/apps/drink-night)
 
 Deployed Client-Side Link: [Deployed Client-Side]

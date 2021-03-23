@@ -3,8 +3,8 @@ const express = require('express')
 // Passport docs: http://www.passportjs.org/docs/
 const passport = require('passport')
 
-// pull in Mongoose model for shows
-const Show = require('../models/shows')
+// pull in Mongoose model for events
+const Event = require('../models/events')
 const Review = require('../models/reviews')
 
 // this is a collection of methods that help us detect situations when we need
@@ -18,7 +18,7 @@ const handle404 = customErrors.handle404
 const requireOwnership = customErrors.requireOwnership
 
 // this is middleware that will remove blank fields from `req.body`, e.g.
-// { show: { title: '', text: 'foo' } } -> { show: { text: 'foo' } }
+// { event: { title: '', text: 'foo' } } -> { event: { text: 'foo' } }
 const removeBlanks = require('../../lib/remove_blank_fields')
 // passing this as a second argument to `router.<verb>` will make it
 // so that a token MUST be passed for that route to be available
@@ -29,52 +29,51 @@ const requireToken = passport.authenticate('bearer', { session: false })
 const router = express.Router()
 
 // INDEX
-// GET /shows
-router.get('/shows', (req, res, next) => {
-  Show.find()
-    .then(shows => {
-      // `shows` will be an array of Mongoose documents
+// GET /events
+router.get('/events', (req, res, next) => {
+  Event.find()
+    .then(events => {
+      // `events` will be an array of Mongoose documents
       // we want to convert each one to a POJO, so we use `.map` to
       // apply `.toObject` to each one
-      return shows.map(show => show.toObject())
+      return events.map(event => event.toObject())
     })
-    // respond with status 200 and JSON of the shows
-    .then(shows => res.status(200).json({ shows: shows }))
+    // respond with status 200 and JSON of the events
+    .then(events => res.status(200).json({ events: events }))
     // if an error occurs, pass it to the handler
     .catch(next)
 })
 
 // SHOW
-// GET /shows/5a7db6c74d55bc51bdf39793
-router.get('/shows/:id', requireToken, (req, res, next) => {
+// GET /events/5a7db6c74d55bc51bdf39793
+router.get('/events/:id', requireToken, (req, res, next) => {
   // req.params.id will be set based on the `:id` in the route
   let reviews
-  Review.find({ show: req.params.id })
+  Review.find({ event: req.params.id })
     .then(foundRevs => {
       // console.log(foundRevs)
       reviews = foundRevs
-      return Show.findById(req.params.id)
+      return Event.findById(req.params.id)
     })
     .then(handle404)
-    .then(show => {
-      // console.log(reviews)
-      show.reviews = reviews
-      console.log('show is ', show)
-      res.status(200).json({ show: show, reviews: reviews })
+    .then(event => {
+      event.reviews = reviews
+      console.log('event is ', event)
+      res.status(200).json({ event: event, reviews: reviews })
     })
     .catch(next)
 })
 
 // CREATE
-// POST /shows
-router.post('/shows', requireToken, (req, res, next) => {
-  // set owner of new show to be current user
-  req.body.show.owner = req.user.id
+// POST /events
+router.post('/events', requireToken, (req, res, next) => {
+  // set owner of new event to be current user
+  req.body.event.owner = req.user.id
 
-  Show.create(req.body.show)
-    // respond to succesful `create` with status 201 and JSON of new "show"
-    .then(show => {
-      res.status(201).json({ show: show.toObject() })
+  Event.create(req.body.event)
+    // respond to succesful `create` with status 201 and JSON of new "event"
+    .then(event => {
+      res.status(201).json({ event: event.toObject() })
     })
     // if an error occurs, pass it off to our error handler
     // the error handler needs the error message and the `res` object so that it
@@ -83,21 +82,21 @@ router.post('/shows', requireToken, (req, res, next) => {
 })
 
 // UPDATE
-// PATCH /shows/5a7db6c74d55bc51bdf39793
-router.patch('/shows/:id', requireToken, removeBlanks, (req, res, next) => {
+// PATCH /events/5a7db6c74d55bc51bdf39793
+router.patch('/events/:id', requireToken, removeBlanks, (req, res, next) => {
   // if the client attempts to change the `owner` property by including a new
   // owner, prevent that by deleting that key/value pair
-  delete req.body.show.owner
+  delete req.body.event.owner
 
-  Show.findById(req.params.id)
+  Event.findById(req.params.id)
     .then(handle404)
-    .then(show => {
+    .then(event => {
       // pass the `req` object and the Mongoose record to `requireOwnership`
       // it will throw an error if the current user isn't the owner
-      requireOwnership(req, show)
+      requireOwnership(req, event)
 
       // pass the result of Mongoose's `.update` to the next `.then`
-      return show.updateOne(req.body.show)
+      return event.updateOne(req.body.event)
     })
     // if that succeeded, return 204 and no JSON
     .then(() => res.sendStatus(204))
@@ -106,15 +105,15 @@ router.patch('/shows/:id', requireToken, removeBlanks, (req, res, next) => {
 })
 
 // DESTROY
-// DELETE /shows/5a7db6c74d55bc51bdf39793
-router.delete('/shows/:id', requireToken, (req, res, next) => {
-  Show.findById(req.params.id)
+// DELETE /events/5a7db6c74d55bc51bdf39793
+router.delete('/events/:id', requireToken, (req, res, next) => {
+  Event.findById(req.params.id)
     .then(handle404)
-    .then(show => {
-      // throw an error if current user doesn't own `show`
-      requireOwnership(req, show)
-      // delete the show ONLY IF the above didn't throw
-      show.deleteOne()
+    .then(event => {
+      // throw an error if current user doesn't own `event`
+      requireOwnership(req, event)
+      // delete the event ONLY IF the above didn't throw
+      event.deleteOne()
     })
     // send back 204 and no content if the deletion succeeded
     .then(() => res.sendStatus(204))

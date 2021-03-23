@@ -11,6 +11,12 @@ const userSchema = new mongoose.Schema({
     required: false,
     unique: true
   },
+  weight: {
+    type: Number,
+    required: false,
+    min: 0,
+    max: 500
+  },
   hashedPassword: {
     type: String,
     required: true
