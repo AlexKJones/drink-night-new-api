@@ -20,9 +20,9 @@ const reviewSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  event: {
+  party: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Event',
+    ref: 'Party',
     required: true
   }
 }, {
