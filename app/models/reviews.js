@@ -1,19 +1,56 @@
 const mongoose = require('mongoose')
 
 const reviewSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
+  notes: {
+    type: String
   },
-  body: {
-    type: String,
-    required: true
+  blackout: {
+    type: Boolean,
+    required: false
   },
-  rating: {
-    type: Number,
-    min: 1,
-    max: 10,
-    required: true
+  heartburn: {
+    type: Boolean,
+    required: false
+  },
+  bloating: {
+    type: Boolean,
+    required: false
+  },
+  diarrhea: {
+    type: Boolean,
+    required: false
+  },
+  vomit: {
+    type: Boolean,
+    required: false
+  },
+  stomach: {
+    type: Boolean,
+    required: false
+  },
+  headache: {
+    type: Boolean,
+    required: false
+  },
+  breathing: {
+    type: Boolean,
+    required: false
+  },
+  coordination: {
+    type: Boolean,
+    required: false
+  },
+  insomnia: {
+    type: Boolean,
+    required: false
+  },
+  redface: {
+    type: Boolean,
+    required: false
+  },
+  memory: {
+    type: Boolean,
+    required: false
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
